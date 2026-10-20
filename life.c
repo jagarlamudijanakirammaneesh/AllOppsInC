@@ -42,10 +42,6 @@ static int runnerAssignmentDone;
 
 static float accumulator;
 
-/* --------------------------------------------------
-   COLORS AND GRID
--------------------------------------------------- */
-
 static Color teamColor(int team)
 {
     if (team == RED) return (Color){240, 65, 75, 255};
@@ -65,9 +61,6 @@ static int valid(int x, int y)
     return x >= 0 && x < cols && y >= 0 && y < rows;
 }
 
-/* --------------------------------------------------
-   CELL CREATION
--------------------------------------------------- */
 
 static Cell createCell(int team)
 {
@@ -86,9 +79,6 @@ static Cell createCell(int team)
     return c;
 }
 
-/* --------------------------------------------------
-   POPULATION STATISTICS
--------------------------------------------------- */
 
 static void updatePopulation(void)
 {
@@ -136,15 +126,6 @@ static int findWinner(void)
     return EMPTY;
 }
 
-/* --------------------------------------------------
-   FAIR STARTING FORMATION
-
-   Red: upper-left
-   Blue: upper-right
-   Green: lower-center
-
-   Each formation contains exactly 600 cells.
--------------------------------------------------- */
 
 static void resetBattle(void)
 {
@@ -227,9 +208,6 @@ static void resetBattle(void)
     updatePopulation();
 }
 
-/* --------------------------------------------------
-   TEAM CENTERS
--------------------------------------------------- */
 
 static void getCenters(int cx[4], int cy[4])
 {
@@ -259,15 +237,6 @@ static void getCenters(int cx[4], int cy[4])
     }
 }
 
-/* --------------------------------------------------
-   FINAL ASSAULT
-
-   Triggers when only two teams remain and the weaker
-   army has 50% or less of the stronger army's population.
-
-   10% of the weaker army are assigned persistent runner
-   roles. The remaining 90% fight.
--------------------------------------------------- */
 
 static void updateFinalAssault(void)
 {
@@ -295,7 +264,6 @@ static void updateFinalAssault(void)
 
     int strong = weak == first ? second : first;
 
-    /* Updated threshold: 50%. */
     if (population[weak] > population[strong] * 0.50f)
         return;
 
@@ -304,7 +272,6 @@ static void updateFinalAssault(void)
     finalAssault = 1;
 
     if (!runnerAssignmentDone) {
-        /* Updated runner percentage: 10%. */
         int needed =
             (int)ceilf(population[weak] * 0.10f);
 
@@ -327,9 +294,6 @@ static void updateFinalAssault(void)
     }
 }
 
-/* --------------------------------------------------
-   FIND NEAREST ENEMY
--------------------------------------------------- */
 
 static float nearestEnemyDistance(
     int x, int y, int team,
@@ -375,19 +339,6 @@ static float nearestEnemyDistance(
     return best;
 }
 
-/* --------------------------------------------------
-   MOVEMENT
-
-   Normal soldiers advance toward enemy armies.
-
-   Strong army:
-   - Pursues the weaker army.
-   - Does not run away.
-
-   Weak army:
-   - 10% attempt to escape.
-   - Remaining 90% advance and fight.
--------------------------------------------------- */
 
 static void moveArmies(void)
 {
@@ -496,7 +447,6 @@ static void moveArmies(void)
                 float score;
 
                 if (isRunner) {
-                    /* Runners seek distance and open space. */
                     score = (newDistance - oldDistance) * 3.0f;
                     score -= enemies * 2.0f;
                     score += allies * 0.1f;
@@ -511,7 +461,6 @@ static void moveArmies(void)
                         bestY = ny;
                     }
                 } else {
-                    /* Fighters and pursuers move toward enemies. */
                     score = (newDistance - oldDistance) * 2.0f;
                     score -= enemies * 1.5f;
                     score += allies * 0.2f;
@@ -552,9 +501,6 @@ static void moveArmies(void)
     }
 }
 
-/* --------------------------------------------------
-   COMBAT
--------------------------------------------------- */
 
 static void combat(void)
 {
@@ -568,7 +514,6 @@ static void combat(void)
         if (attacker.team == EMPTY)
             continue;
 
-        /* Assigned runners focus on escaping. */
         if (finalAssault &&
             attacker.team == weakTeam &&
             attacker.runner)
@@ -655,9 +600,6 @@ static void combat(void)
     nextGrid = temp;
 }
 
-/* --------------------------------------------------
-   SUDDEN DEATH
--------------------------------------------------- */
 
 static void closeArena(void)
 {
@@ -711,9 +653,6 @@ static void closeArena(void)
     }
 }
 
-/* --------------------------------------------------
-   SIMULATION TICK
--------------------------------------------------- */
 
 static void evolve(void)
 {
@@ -743,9 +682,6 @@ static void evolve(void)
     }
 }
 
-/* --------------------------------------------------
-   MANUAL CELL PLACEMENT
--------------------------------------------------- */
 
 static void placeCell(int mouseX, int mouseY, int team)
 {
@@ -771,9 +707,6 @@ static void placeCell(int mouseX, int mouseY, int team)
     updatePopulation();
 }
 
-/* --------------------------------------------------
-   MAIN
--------------------------------------------------- */
 
 int main(void)
 {
@@ -869,7 +802,6 @@ int main(void)
                     color
                 );
 
-                /* White center = assigned runner. */
                 if (finalAssault &&
                     c.team == weakTeam &&
                     c.runner) {
