@@ -19,7 +19,7 @@ Features include:
 - Live generation and population statistics
 - Adjustable simulation speed
 
-### 1. Battle Simulation — `life.c`
+### 2. Battle Simulation — `life.c`
 
 A multi-team battle simulation in which racial armies fight, adapt, retreat, and compete for survival.
 
